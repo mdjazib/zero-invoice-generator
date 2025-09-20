@@ -1,36 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Zero Invoice Generator  
+_A free, browser-based invoice generator powered by **Veb Edge**._
 
-## Getting Started
+## Overview  
+Zero Invoice Generator lets anyone create professional invoices **instantly**—no accounts, no subscriptions, and no hidden fees.  
+Everything runs directly in your browser for a smooth and effortless experience.
 
-First, run the development server:
+## Features  
+- ✅ **No Account Required** – start creating invoices right away  
+- ⚡ **Fast & Simple** – clean, easy-to-use interface  
+- 📝 **No Watermark** – invoices are always clean and professional  
+- 📥 **Download as PDF** – save invoices anytime  
+- 🔗 **Copy Shareable Link** – send a digital invoice link instantly  
+- 📧 **Send by Email** – email invoices to clients directly from the app  
+- 🖨️ **Print Instantly** – print invoices with a single click  
+- 💳 **Completely Free** – no payment card or subscription needed
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## How It Works  
+1. Open the web app in your browser.  
+2. Enter your invoice details (items, prices, totals).  
+3. Choose to **download**, **copy a shareable link**, **email**, or **print** the invoice.  
+4. Done—your professional invoice is ready to share.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## License  
+This project is released under the **MIT License**.  
+Free to use and share with proper credit.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Powered by Veb Edge** – Smart tools for smart businesses.
