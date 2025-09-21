@@ -1,7 +1,7 @@
 "use client"
 import Description from '@/components/Description'
 import Invoice from '@/components/Invoice'
-import { Copy, FileDown, ImageDown, Minus, Moon, Plus, Printer, Send, Share2, Sun } from 'lucide-react'
+import { ImageDown, Minus, Moon, Plus, Sun } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
 import domtoimage from "dom-to-image-more"
 
@@ -34,6 +34,10 @@ const page = () => {
   }
   useEffect(() => {
     setThemeSwitch(localStorage.getItem("zero-ig-theme") === "true");
+    const savedCompany = localStorage.getItem("zero-ig-company");
+    if (savedCompany) {
+      setTemplate((prev) => ({ ...prev, ...JSON.parse(savedCompany) }));
+    }
   }, []);
   const themeSwitcher = (theme) => {
     localStorage.setItem("zero-ig-theme", theme);
@@ -44,7 +48,21 @@ const page = () => {
   }
   const handleImageDownload = async () => {
     if (!ref.current) return;
-    domtoimage.toPng(ref.current)
+    const scale = 3;
+    ref.current.style.minHeight = "fit-content";
+    document.body.style.overflow = "hidden";
+    const style = {
+      transform: `scale(${scale})`,
+      transformOrigin: "top left",
+      width: `${ref.current.offsetWidth}px`,
+      height: `${ref.current.offsetHeight}px`,
+    };
+    const param = {
+      width: ref.current.offsetWidth * scale,
+      height: ref.current.offsetHeight * scale,
+      style,
+    };
+    domtoimage.toPng(ref.current, param)
       .then((dataUrl) => {
         const link = document.createElement("a");
         link.href = dataUrl;
@@ -54,6 +72,22 @@ const page = () => {
       .catch((err) => {
         alert("Something went wrong, Please try again.");
       });
+    setTimeout(() => {
+      ref.current.style.minHeight = "unset";
+      document.body.style.overflow = "unset";
+    }, 0);
+  };
+  const updateCompanyField = (field, value) => {
+    setTemplate((prev) => {
+      const updated = { ...prev, [field]: value };
+      const companyData = {
+        companyName: updated.companyName,
+        companyWebsite: updated.companyWebsite,
+        companyEmail: updated.companyEmail,
+      };
+      localStorage.setItem("zero-ig-company", JSON.stringify(companyData));
+      return updated;
+    });
   };
   return (
     <div style={themeSwitch ? theme.dark : theme.light} className={themeSwitch ? 'root --dark' : 'root'}>
@@ -69,9 +103,9 @@ const page = () => {
           </div>
           <div className={step === 1 ? "data-collection --open" : "data-collection"}>
             <div className="row">
-              <input type="text" placeholder='Name' value={template.companyName} onChange={(e) => { setTemplate((prev) => ({ ...prev, companyName: e.target.value })) }} />
-              <input type="text" placeholder='Website' value={template.companyWebsite} onChange={(e) => { setTemplate((prev) => ({ ...prev, companyWebsite: e.target.value })) }} />
-              <input type="text" placeholder='Email' value={template.companyEmail} onChange={(e) => { setTemplate((prev) => ({ ...prev, companyEmail: e.target.value })) }} />
+              <input type="text" placeholder='Name' value={template.companyName} onChange={(e) => updateCompanyField("companyName", e.target.value)} />
+              <input type="text" placeholder='Website' value={template.companyWebsite} onChange={(e) => updateCompanyField("companyWebsite", e.target.value)} />
+              <input type="text" placeholder='Email' value={template.companyEmail} onChange={(e) => updateCompanyField("companyEmail", e.target.value)} />
             </div>
           </div>
         </div>
@@ -82,7 +116,7 @@ const page = () => {
           </div>
           <div className={step === 2 ? "data-collection --open" : "data-collection"}>
             <div className="row">
-              <input type="text" placeholder='Name' value={template.clientName} onChange={(e) => { setTemplate((prev) => ({ ...prev, clientName: e.target.value })) }} />
+              <input type="text" placeholder='Name' value={template.clientName} onChange={(e) => { setTemplate((prev) => ({ ...prev, clientName: e.target.value })); }} />
               <input type="text" placeholder='Email' value={template.clientEmail} onChange={(e) => { setTemplate((prev) => ({ ...prev, clientEmail: e.target.value })) }} />
             </div>
             <div className="row">
@@ -101,12 +135,7 @@ const page = () => {
           </div>
         </div>
         <div className="cta-group">
-          <div className="btn"><Printer /><span>Print</span></div>
-          <div className="btn"><FileDown /><span>Download PDF</span></div>
           <div className="btn" onClick={handleImageDownload}><ImageDown /><span>Download Image</span></div>
-          <div className="btn"><Copy /><span>Copy link</span></div>
-          <div className="btn"><Send /><span>Send email</span></div>
-          <div className="btn"><Share2 /><span>Share on WhatsApp</span></div>
         </div>
       </div>
       <Invoice data={invoice} template={template} ref={ref} setInvoiceId={setInvoiceId} />

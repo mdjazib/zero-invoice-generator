@@ -38,6 +38,7 @@ $quicksand: var(--font-quick-sand)
       max-width: max-content
       min-width: 500px
       position: relative
+      overflow: hidden
       &::before
         content: ""
         position: absolute
@@ -325,7 +326,7 @@ $quicksand: var(--font-quick-sand)
       bottom: 0px
       background-color: $base
       padding-top: 10px
-      border-top: 1px solid lch(from $base calc(l - 20) c h)
+      margin-top: -10px
       &::before
         content: ""
         position: absolute
