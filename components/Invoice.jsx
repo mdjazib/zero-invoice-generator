@@ -1,18 +1,20 @@
 "use client"
 import React, { useEffect, useState } from 'react'
 
-const Invoice = ({ data, template }) => {
+const Invoice = ({ data, template, ref, setInvoiceId }) => {
     const [id, setId] = useState(0);
     const sum = (a, b) => { return a + b };
     const subtotal = data.map(e => e.price * e.qty).reduce(sum, 0);
     const gst = subtotal * 0.10;
     const total = gst + subtotal;
     useEffect(() => {
-        setId(Date.now());
+        const id = Date.now();
+        setInvoiceId(id);
+        setId(id);
     }, [data, template]);
     return (
         <div className="col">
-            <div className="your-invoice">
+            <div ref={ref} className="your-invoice">
                 <div className="header">
                     <div className="header-main">
                         <h1>{template.companyName.length ? template.companyName : "Zero Invoice"}</h1>

@@ -2,9 +2,12 @@
 import Description from '@/components/Description'
 import Invoice from '@/components/Invoice'
 import { Copy, FileDown, ImageDown, Minus, Moon, Plus, Printer, Send, Share2, Sun } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import domtoimage from "dom-to-image-more"
 
 const page = () => {
+  const ref = useRef();
+  const [invoiceId, setInvoiceId] = useState(0);
   const [themeSwitch, setThemeSwitch] = useState(false);
   const [invoice, setInvoice] = useState([]);
   const [template, setTemplate] = useState({
@@ -39,6 +42,19 @@ const page = () => {
   const stepSwitcher = (step) => {
     setStep(step);
   }
+  const handleImageDownload = async () => {
+    if (!ref.current) return;
+    domtoimage.toPng(ref.current)
+      .then((dataUrl) => {
+        const link = document.createElement("a");
+        link.href = dataUrl;
+        link.download = `#${invoiceId}-${template.companyName}-zero-invoice-generator.png`;
+        link.click();
+      })
+      .catch((err) => {
+        alert("Something went wrong, Please try again.");
+      });
+  };
   return (
     <div style={themeSwitch ? theme.dark : theme.light} className={themeSwitch ? 'root --dark' : 'root'}>
       <div className="col --generator">
@@ -87,13 +103,13 @@ const page = () => {
         <div className="cta-group">
           <div className="btn"><Printer /><span>Print</span></div>
           <div className="btn"><FileDown /><span>Download PDF</span></div>
-          <div className="btn"><ImageDown /><span>Download Image</span></div>
+          <div className="btn" onClick={handleImageDownload}><ImageDown /><span>Download Image</span></div>
           <div className="btn"><Copy /><span>Copy link</span></div>
           <div className="btn"><Send /><span>Send email</span></div>
           <div className="btn"><Share2 /><span>Share on WhatsApp</span></div>
         </div>
       </div>
-      <Invoice data={invoice} template={template} />
+      <Invoice data={invoice} template={template} ref={ref} setInvoiceId={setInvoiceId} />
     </div>
   )
 }
