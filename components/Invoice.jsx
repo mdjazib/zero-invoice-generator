@@ -2,11 +2,14 @@
 import React, { useEffect, useState } from 'react'
 
 const Invoice = ({ data, template }) => {
+    const [id, setId] = useState(0);
     const sum = (a, b) => { return a + b };
     const subtotal = data.map(e => e.price * e.qty).reduce(sum, 0);
     const gst = subtotal * 0.10;
     const total = gst + subtotal;
-    console.log(template);
+    useEffect(() => {
+        setId(Date.now());
+    }, [data, template]);
     return (
         <div className="col">
             <div className="your-invoice">
@@ -14,7 +17,7 @@ const Invoice = ({ data, template }) => {
                     <div className="header-main">
                         <h1>{template.companyName.length ? template.companyName : "Zero Invoice"}</h1>
                         <div className="invoice-col">
-                            <p>#{Date.now()}</p>
+                            <p>#{id ? id : "00000000000"}</p>
                             <p>{new Date().toLocaleDateString()}</p>
                         </div>
                     </div>
@@ -46,8 +49,8 @@ const Invoice = ({ data, template }) => {
                                     <td>{i + 1}</td>
                                     <td>{e.name}</td>
                                     <td>{e.qty > 1 ? e.qty : "-"}</td>
-                                    <td>{e.qty > 1 ? e.price : "-"}</td>
-                                    <td>{e.price * e.qty}</td>
+                                    <td>{e.qty > 1 ? <>${e.price}</> : "-"}</td>
+                                    <td>${e.price * e.qty}</td>
                                 </tr>
                             ))
                         }
@@ -61,7 +64,7 @@ const Invoice = ({ data, template }) => {
                         <tr>
                             <td colSpan={3}></td>
                             <td>Total GST</td>
-                            <td>${gst}</td>
+                            <td>${gst.toFixed(2)}</td>
                         </tr>
                         <tr>
                             <td colSpan={3}></td>
