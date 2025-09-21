@@ -151,6 +151,8 @@ $quicksand: var(--font-quick-sand)
               padding-left: 6px
               padding-right: 6px
               text-align: center
+              &:nth-child(2)
+                width: 100%
               &:nth-child(1),
               &:nth-child(2)
                 text-align: left
@@ -204,6 +206,7 @@ $quicksand: var(--font-quick-sand)
           height: 100%
           &:nth-last-child(1)
             align-items: flex-end
+            width: max-content
           h2
             color: $text
             font-size: 16px
@@ -275,6 +278,7 @@ $quicksand: var(--font-quick-sand)
             height: 46.4px
             min-width: 46.4px
             @include flex(center,center,row,0px)
+            background-color: $base
             border: 1px solid lch(from $base calc(l - 20) c h)
             cursor: pointer
             svg

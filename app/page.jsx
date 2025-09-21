@@ -6,6 +6,16 @@ import React, { useEffect, useState } from 'react'
 
 const page = () => {
   const [themeSwitch, setThemeSwitch] = useState(false);
+  const [invoice, setInvoice] = useState([]);
+  const [template, setTemplate] = useState({
+    companyName: "",
+    companyWebsite: "",
+    companyEmail: "",
+    clientName: "",
+    clientEmail: "",
+    clientContact: "",
+    clientAddress: ""
+  });
   const [step, setStep] = useState(1);
   const theme = {
     light: {
@@ -43,9 +53,9 @@ const page = () => {
           </div>
           <div className={step === 1 ? "data-collection --open" : "data-collection"}>
             <div className="row">
-              <input type="text" placeholder='Name' />
-              <input type="text" placeholder='Website' />
-              <input type="text" placeholder='Email' />
+              <input type="text" placeholder='Name' value={template.companyName} onChange={(e) => { setTemplate((prev) => ({ ...prev, companyName: e.target.value })) }} />
+              <input type="text" placeholder='Website' value={template.companyWebsite} onChange={(e) => { setTemplate((prev) => ({ ...prev, companyWebsite: e.target.value })) }} />
+              <input type="text" placeholder='Email' value={template.companyEmail} onChange={(e) => { setTemplate((prev) => ({ ...prev, companyEmail: e.target.value })) }} />
             </div>
           </div>
         </div>
@@ -56,12 +66,12 @@ const page = () => {
           </div>
           <div className={step === 2 ? "data-collection --open" : "data-collection"}>
             <div className="row">
-              <input type="text" placeholder='Name' />
-              <input type="text" placeholder='Email' />
+              <input type="text" placeholder='Name' value={template.clientName} onChange={(e) => { setTemplate((prev) => ({ ...prev, clientName: e.target.value })) }} />
+              <input type="text" placeholder='Email' value={template.clientEmail} onChange={(e) => { setTemplate((prev) => ({ ...prev, clientEmail: e.target.value })) }} />
             </div>
             <div className="row">
-              <input type="text" placeholder='Contact' />
-              <input type="text" placeholder='Address' />
+              <input type="text" placeholder='Contact' value={template.clientContact} onChange={(e) => { setTemplate((prev) => ({ ...prev, clientContact: e.target.value })) }} />
+              <input type="text" placeholder='Address' value={template.clientAddress} onChange={(e) => { setTemplate((prev) => ({ ...prev, clientAddress: e.target.value })) }} />
             </div>
           </div>
         </div>
@@ -71,7 +81,7 @@ const page = () => {
             {step === 3 ? <Minus /> : <Plus />}
           </div>
           <div className={step === 3 ? "data-collection --open" : "data-collection"}>
-            <Description />
+            <Description setInvoice={setInvoice} />
           </div>
         </div>
         <div className="cta-group">
@@ -83,7 +93,7 @@ const page = () => {
           <div className="btn"><Share2 /><span>Share on WhatsApp</span></div>
         </div>
       </div>
-      <Invoice />
+      <Invoice data={invoice} template={template} />
     </div>
   )
 }
