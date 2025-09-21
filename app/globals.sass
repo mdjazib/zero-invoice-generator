@@ -16,6 +16,7 @@ $quicksand: var(--font-quick-sand)
   padding: 0
   box-sizing: border-box
   font-family: $quicksand
+  user-select: none
 
 .root
   height: 100svh
@@ -36,6 +37,17 @@ $quicksand: var(--font-quick-sand)
     &:nth-child(2)
       max-width: max-content
       min-width: 500px
+      position: relative
+      &::before
+        content: ""
+        position: absolute
+        width: 100%
+        height: 40px
+        background-color: lch(from $base calc(l - 6) c h)
+        top: 0px
+        right: 0px
+        @media (max-width:1000px)
+          height: 10px
     @media (max-width:1000px)
       min-width: 100vw !important
       max-width: 100vw !important
@@ -198,3 +210,143 @@ $quicksand: var(--font-quick-sand)
           p
             font-size: 10px
             color: lch(from $text calc(l + 40) c h)
+  .--generator
+    overflow-y: overlay
+    @include flex(flex-start,flex-start,column,20px)
+    &::-webkit-scrollbar
+      display: none
+    &::before
+      content: ""
+      position: absolute
+      width: 100%
+      height: 40px
+      background-color: $base
+      top: 0px
+      left: 0px
+      @media (max-width:1000px)
+        height: 10px
+    @media (max-width:1000px)
+      gap: 10px
+    .header
+      width: 100%
+      @include flex(space-between,center,row,20px)
+      cursor: pointer
+      h1
+        font-family: $playfair
+        font-size: clamp(20px,3vw,34px)
+        color: $text
+      svg
+        color: $text
+        @media (max-width:600px)
+          width: 16px
+          height: 16px
+    .data-group
+      width: 100%
+      &:nth-child(4)
+        .data-collection
+          .row
+            @include flex(flex-start,center,row,10px)
+      .header
+        background-color: lch(from $base calc(l - 3) c h)
+        padding: 20px
+        position: sticky
+        top: 0px
+        h2
+          color: $text
+          font-weight: 600
+          font-size: clamp(15px,3vw,20px)
+        @media (max-width:1000px)
+          padding: 14px
+      .data-collection
+        @include flex(flex-start,flex-start,column,10px)
+        width: 100%
+        padding: 20px
+        display: none
+        @media (max-width:1000px)
+          padding: 10px 0px
+        .row
+          display: grid
+          grid-template-columns: repeat(auto-fit,minmax(200px,1fr))
+          gap: 10px
+          width: 100%
+          .btn
+            height: 46.4px
+            min-width: 46.4px
+            @include flex(center,center,row,0px)
+            border: 1px solid lch(from $base calc(l - 20) c h)
+            cursor: pointer
+            svg
+              width: 20px
+              height: 20px
+              color: lch(from $text calc(l + 30) c h)
+            &:hover
+              background-color: lch(from $base calc(l - 4) c h)
+            @media (max-width:700px)
+              height: 35.2px
+              min-width: 35.2px
+              svg
+                height: 16px
+                width: 16px
+        input
+          width: 100%
+          padding: 14px
+          outline: none
+          border: 1px solid lch(from $base calc(l - 20) c h)
+          background-color: $base
+          color: $text
+          &::placeholder
+            color: lch(from $text calc(l + 50) c h)
+          &[placeholder='Qty']
+            max-width: 100px
+            text-align: center
+          &[placeholder='Price']
+            max-width: 150px
+          @media (max-width:700px)
+            font-size: 11px
+            padding: 10px
+            &[placeholder='Qty']
+              max-width: 41px
+            &[placeholder='Price']
+              max-width: 60px
+      .--open
+        display: flex
+    .cta-group
+      width: 100%
+      display: grid
+      grid-template-columns: repeat(auto-fill,minmax(170px,1fr))
+      gap: 10px
+      .btn
+        padding: 10px 16px
+        @include flex(center,center,row,8px)
+        border: 1px solid lch(from $base calc(l - 20) c h)
+        cursor: pointer
+        color: lch(from $text calc(l + 30) c h)
+        span
+          font-size: clamp(12px,3vw,14px)
+          white-space: nowrap
+        svg
+          min-width: 16px
+          width: 16px
+          height: 16px
+        &:hover
+          background-color: lch(from $base calc(l - 4) c h)
+.--dark
+  .--generator
+    .cta-group
+      .btn
+        border-color: lch(from $base calc(l + 10) c h)
+        &:hover
+          background-color: lch(from $base calc(l + 4) c h)
+    .data-group
+      .header
+        background-color: lch(from $base calc(l + 3) c h)
+      .data-collection
+        .row
+          .btn
+            border-color: lch(from $base calc(l + 10) c h)
+            &:hover
+              background-color: lch(from $base calc(l + 4) c h)
+        input
+          border-color: lch(from $base calc(l + 10) c h)
+          &::placeholder
+            color: lch(from $text calc(l - 40) c h)

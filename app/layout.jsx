@@ -47,14 +47,9 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  const theme = {
-    "--base-color": "lch(100 0 0)",
-    "--text-color": "lch(0 0 0)",
-    "--accent-color": "lch(36.94 59.85 9.8)"
-  }
   return (
     <html lang="en">
-      <body style={theme} className={`${playFair.variable} ${quickSand.variable}`}>
+      <body className={`${playFair.variable} ${quickSand.variable}`}>
         {children}
       </body>
     </html>

@@ -27,8 +27,8 @@ const Invoice = () => {
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Item</th>
-                            <th>Quantity</th>
+                            <th>Description</th>
+                            <th>Qty</th>
                             <th>Unit Price</th>
                             <th>Total</th>
                         </tr>
@@ -104,11 +104,6 @@ const Invoice = () => {
                         </tr>
                         <tr>
                             <td colSpan={3}></td>
-                            <td>Discount</td>
-                            <td>$0</td>
-                        </tr>
-                        <tr>
-                            <td colSpan={3}></td>
                             <td><b>Total</b></td>
                             <td><b>$4900</b></td>
                         </tr>
@@ -116,7 +111,7 @@ const Invoice = () => {
                 </table>
                 <footer>
                     <div className="footer-col">
-                        <h2>Company details</h2>
+                        <h2>Thank you</h2>
                         <p>Website: vedege.com</p>
                         <p>Email: one@vebedge.com</p>
                     </div>
