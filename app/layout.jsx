@@ -1,5 +1,6 @@
 import { Playfair, Quicksand } from "next/font/google";
 import "./globals.sass";
+import { Toaster } from "sonner";
 
 const playFair = Playfair({
   variable: "--font-play-fair",
@@ -50,6 +51,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${playFair.variable} ${quickSand.variable}`}>
+        <Toaster position="top-center" />
         {children}
       </body>
     </html>

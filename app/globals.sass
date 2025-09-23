@@ -27,6 +27,9 @@ $quicksand: var(--font-quick-sand)
   scroll-snap-type: x mandatory
   &::-webkit-scrollbar
     display: none
+  .--invoice-rec
+    @media (max-width:1000px)
+      padding: 0px !important
   .col
     height: 100%
     width: 100%
@@ -374,3 +377,33 @@ $quicksand: var(--font-quick-sand)
           border-color: lch(from $base calc(l + 10) c h)
           &::placeholder
             color: lch(from $text calc(l - 40) c h)
+
+@media print
+  .root
+    min-height: fit-content
+    .col
+      padding: 0px
+      &:nth-last-child(1)
+        min-height: fit-content
+        .your-invoice
+          min-height: fit-content
+    .--generator
+      display: none
+
+.loading-screen
+  height: 100svh
+  width: 100vw
+  background-color: $base
+  @include flex(center,center,row,0px)
+  .loading
+    @include flex(center,center,row,10px)
+    color: $text
+    p
+      font-size: 14px
+    svg
+      width: 18px
+      height: 18px
+      animation: loading .8s linear infinite
+      @keyframes loading
+        100%
+          rotate: 360deg

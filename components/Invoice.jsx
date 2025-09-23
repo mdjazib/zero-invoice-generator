@@ -1,26 +1,30 @@
 "use client"
 import React, { useEffect, useState } from 'react'
 
-const Invoice = ({ data, template, ref, setInvoiceId }) => {
+const Invoice = ({ data, template, ref, setInvoiceId, iid = false, date = new Date().toLocaleDateString() }) => {
     const [id, setId] = useState(0);
     const sum = (a, b) => { return a + b };
     const subtotal = data.map(e => e.price * e.qty).reduce(sum, 0);
     const gst = subtotal * 0.10;
     const total = gst + subtotal;
     useEffect(() => {
-        const id = Date.now();
-        setInvoiceId(id);
-        setId(id);
-    }, [data, template]);
+        if (iid) {
+            setId(iid);
+        } else {
+            const did = Date.now();
+            setInvoiceId(did);
+            setId(did);
+        }
+    }, [data, template, iid]);
     return (
-        <div className="col">
+        <div className="col --invoice-rec">
             <div ref={ref} className="your-invoice">
                 <div className="header">
                     <div className="header-main">
                         <h1>{template.companyName.length ? template.companyName : "Zero Invoice"}</h1>
                         <div className="invoice-col">
                             <p>#{id ? id : "00000000000"}</p>
-                            <p>{new Date().toLocaleDateString()}</p>
+                            <p>{date}</p>
                         </div>
                     </div>
                     <div className="header-flex">

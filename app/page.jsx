@@ -1,15 +1,21 @@
 "use client"
 import Description from '@/components/Description'
 import Invoice from '@/components/Invoice'
-import { ImageDown, Minus, Moon, Plus, Sun } from 'lucide-react'
+import { Copy, ImageDown, Loader, Minus, Moon, Plus, Printer, Sun } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
+import { useClipboard } from 'use-clipboard-copy'
 import domtoimage from "dom-to-image-more"
+import { toast } from 'sonner'
+import axios from 'axios'
 
 const page = () => {
   const ref = useRef();
+  const clipboard = useClipboard();
   const [invoiceId, setInvoiceId] = useState(0);
   const [themeSwitch, setThemeSwitch] = useState(false);
   const [invoice, setInvoice] = useState([]);
+  const [oldInvoice, setOldInvoice] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [template, setTemplate] = useState({
     companyName: "",
     companyWebsite: "",
@@ -50,7 +56,6 @@ const page = () => {
     if (!ref.current) return;
     const scale = 3;
     ref.current.style.minHeight = "fit-content";
-    document.body.style.overflow = "hidden";
     const style = {
       transform: `scale(${scale})`,
       transformOrigin: "top left",
@@ -70,11 +75,10 @@ const page = () => {
         link.click();
       })
       .catch((err) => {
-        alert("Something went wrong, Please try again.");
+        toast.error("Something went wrong.");
       });
     setTimeout(() => {
       ref.current.style.minHeight = "unset";
-      document.body.style.overflow = "unset";
     }, 0);
   };
   const updateCompanyField = (field, value) => {
@@ -89,6 +93,41 @@ const page = () => {
       return updated;
     });
   };
+  const handleInvoiceCopy = async () => {
+    try {
+      if (invoiceId === oldInvoice) {
+        toast.success("Invoice link successfully copied.");
+        clipboard.copy(`${window.location.origin}/${invoiceId}`);
+      } else {
+        setLoading(true);
+        const formdata = new FormData();
+        formdata.append("id", invoiceId);
+        formdata.append("companyName", template.companyName);
+        formdata.append("companyEmail", template.companyEmail);
+        formdata.append("companyWebsite", template.companyWebsite);
+        formdata.append("clientName", template.clientName);
+        formdata.append("clientAddress", template.clientAddress);
+        formdata.append("clientContact", template.clientContact);
+        formdata.append("clientEmail", template.clientEmail);
+        formdata.append("invoice", JSON.stringify(invoice));
+        const { data } = await axios.post("/api/invoice/copy", formdata, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        })
+        if (data === 200) {
+          toast.success("Invoice link successfully copied.");
+          clipboard.copy(`${window.location.origin}/${invoiceId}`);
+          setOldInvoice(invoiceId);
+          setLoading(false);
+        } else {
+          toast.error("Something went wrong.");
+        }
+      }
+    } catch (error) {
+      toast.error("Something went wrong.");
+    }
+  }
   return (
     <div style={themeSwitch ? theme.dark : theme.light} className={themeSwitch ? 'root --dark' : 'root'}>
       <div className="col --generator">
@@ -135,7 +174,13 @@ const page = () => {
           </div>
         </div>
         <div className="cta-group">
-          <div className="btn" onClick={handleImageDownload}><ImageDown /><span>Download Image</span></div>
+          <div className="btn" onClick={handleImageDownload}><ImageDown /><span>Download Invoice</span></div>
+          <div className="btn" onClick={() => { window.print() }}><Printer /><span>Print Invoice</span></div>
+          {
+            loading ?
+              <div className="btn"><Loader /><span>Generating Link</span></div> :
+              <div className="btn" onClick={handleInvoiceCopy}><Copy /><span>Invoice Link</span></div>
+          }
         </div>
       </div>
       <Invoice data={invoice} template={template} ref={ref} setInvoiceId={setInvoiceId} />
