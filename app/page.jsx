@@ -1,7 +1,7 @@
 "use client"
 import Description from '@/components/Description'
 import Invoice from '@/components/Invoice'
-import { Copy, ImageDown, Loader, Minus, Moon, Plus, Printer, Sun } from 'lucide-react'
+import { Copy, ImageDown, Loader, Mail, Minus, Moon, Plus, Printer, Sun } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
 import { useClipboard } from 'use-clipboard-copy'
 import domtoimage from "dom-to-image-more"
@@ -16,6 +16,7 @@ const page = () => {
   const [invoice, setInvoice] = useState([]);
   const [oldInvoice, setOldInvoice] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [sending, setSending] = useState(false);
   const [template, setTemplate] = useState({
     companyName: "",
     companyWebsite: "",
@@ -93,6 +94,24 @@ const page = () => {
       return updated;
     });
   };
+  const invoiceFormData = async (route) => {
+    const formdata = new FormData();
+    formdata.append("id", invoiceId);
+    formdata.append("companyName", template.companyName);
+    formdata.append("companyEmail", template.companyEmail);
+    formdata.append("companyWebsite", template.companyWebsite);
+    formdata.append("clientName", template.clientName);
+    formdata.append("clientAddress", template.clientAddress);
+    formdata.append("clientContact", template.clientContact);
+    formdata.append("clientEmail", template.clientEmail);
+    formdata.append("invoice", JSON.stringify(invoice));
+    const { data } = await axios.post(`/api/invoice/${route}`, formdata, {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    });
+    return data;
+  }
   const handleInvoiceCopy = async () => {
     try {
       if (invoiceId === oldInvoice) {
@@ -100,21 +119,7 @@ const page = () => {
         clipboard.copy(`${window.location.origin}/${invoiceId}`);
       } else {
         setLoading(true);
-        const formdata = new FormData();
-        formdata.append("id", invoiceId);
-        formdata.append("companyName", template.companyName);
-        formdata.append("companyEmail", template.companyEmail);
-        formdata.append("companyWebsite", template.companyWebsite);
-        formdata.append("clientName", template.clientName);
-        formdata.append("clientAddress", template.clientAddress);
-        formdata.append("clientContact", template.clientContact);
-        formdata.append("clientEmail", template.clientEmail);
-        formdata.append("invoice", JSON.stringify(invoice));
-        const { data } = await axios.post("/api/invoice/copy", formdata, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        })
+        const data = await invoiceFormData("copy");
         if (data === 200) {
           toast.success("Invoice link successfully copied.");
           clipboard.copy(`${window.location.origin}/${invoiceId}`);
@@ -122,10 +127,33 @@ const page = () => {
           setLoading(false);
         } else {
           toast.error("Something went wrong.");
+          setLoading(false);
         }
       }
     } catch (error) {
       toast.error("Something went wrong.");
+      setLoading(false);
+    }
+  }
+  const handleInvoiceSend = async () => {
+    try {
+      if (template.companyName.trim().length > 3) {
+        if (template.clientEmail.includes("@gmail.com")) {
+          if (!sending) {
+            setSending(true);
+            const data = await invoiceFormData("mail");
+            data === 200 && toast.success("Invoice has been successfully sent to the client's email.");
+            setSending(false);
+          }
+        } else {
+          toast.error("Please provide the client's email to send the digital invoice.");
+        }
+      } else {
+        toast.error("Company name is required to send the digital invoice.");
+      }
+    } catch (error) {
+      toast.error("Something went wrong.");
+      setSending(false);
     }
   }
   return (
@@ -181,6 +209,7 @@ const page = () => {
               <div className="btn"><Loader /><span>Generating Link</span></div> :
               <div className="btn" onClick={handleInvoiceCopy}><Copy /><span>Invoice Link</span></div>
           }
+          <div className="btn" onClick={handleInvoiceSend}>{sending ? <Loader /> : <Mail />}<span>Send Invoice</span></div>
         </div>
       </div>
       <Invoice data={invoice} template={template} ref={ref} setInvoiceId={setInvoiceId} />
