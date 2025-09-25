@@ -14,7 +14,9 @@ export async function POST(req) {
     const clientAddress = formdata.get("clientAddress");
     const clientContact = formdata.get("clientContact");
     const invoiceData = JSON.parse(formdata.get("invoice"));
+    const currency = formdata.get("currency");
+    const gst = formdata.get("gst");
     const isExist = await invoice.countDocuments({ id });
-    if (!isExist) await invoice.create({ id, companyName, companyEmail, companyWebsite, clientName, clientEmail, clientAddress, clientContact, invoice: invoiceData });
+    if (!isExist) await invoice.create({ id, companyName, companyEmail, companyWebsite, clientName, clientEmail, clientAddress, clientContact, invoice: invoiceData, currency, gst });
     return NextResponse.json(200);
 }

@@ -10,7 +10,9 @@ const invoiceSchema = new Schema(
         clientAddress: String,
         clientEmail: String,
         clientContact: String,
-        invoice: Array
+        invoice: Array,
+        currency: String,
+        gst: String
     }, { timestamps: true }
 )
 

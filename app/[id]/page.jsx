@@ -11,6 +11,8 @@ const page = () => {
     const { id } = useParams();
     const [invoiceId, setInvoiceId] = useState("00000000000");
     const [date, setDate] = useState("");
+    const [gst, setGST] = useState("0.0");
+    const [currency, setCurrency] = useState("PKR");
     const [invoice, setInvoice] = useState([]);
     const [loading, setLoading] = useState(true);
     const [template, setTemplate] = useState({
@@ -34,9 +36,11 @@ const page = () => {
             try {
                 const { data } = await axios.get(`/api/invoice/${id}`);
                 setDate(new Date(data.createdAt).toLocaleDateString());
+                setCurrency(data.currency);
                 setInvoice(data.invoice);
                 setInvoiceId(data.id);
                 setLoading(false);
+                setGST(data.gst);
                 setTemplate({
                     companyName: data.companyName,
                     companyWebsite: data.companyWebsite,
@@ -60,7 +64,7 @@ const page = () => {
                             <Loader /> <p>Loading Invoice</p>
                         </div>
                     </div> :
-                    <Invoice data={invoice} template={template} ref={ref} setInvoiceId={() => { }} iid={invoiceId} date={date} />
+                    <Invoice data={invoice} template={template} ref={ref} setInvoiceId={() => { }} iid={invoiceId} date={date} gst={gst} currency={currency} />
             }
         </div>
     )

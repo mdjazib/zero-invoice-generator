@@ -1,12 +1,25 @@
 "use client"
 import React, { useEffect, useState } from 'react'
 
-const Invoice = ({ data, template, ref, setInvoiceId, iid = false, date = new Date().toLocaleDateString() }) => {
+const Invoice = ({ data, template, ref, setInvoiceId, iid = false, date = new Date().toLocaleDateString(), gst: dynamicGST, currency }) => {
     const [id, setId] = useState(0);
     const sum = (a, b) => { return a + b };
+    const [invoiceCurrency, setInvoiceCurrency] = useState("PKR");
     const subtotal = data.map(e => e.price * e.qty).reduce(sum, 0);
-    const gst = subtotal * 0.10;
+    const gst = subtotal * Number(dynamicGST);
     const total = gst + subtotal;
+    const currencyObject = {
+        "USD": "$",
+        "CAD": "$",
+        "AUD": "$",
+        "NZD": "$",
+        "SGD": "$",
+        "PKR": "Rs",
+        "SAR": "﷼",
+        "AED": "د.إ",
+        "EUR": "€",
+        "GBP": "£"
+    }
     useEffect(() => {
         if (iid) {
             setId(iid);
@@ -16,6 +29,9 @@ const Invoice = ({ data, template, ref, setInvoiceId, iid = false, date = new Da
             setId(did);
         }
     }, [data, template, iid]);
+    useEffect(() => {
+        setInvoiceCurrency(currency === undefined ? "PKR" : currency);
+    }, [invoiceCurrency, currency]);
     return (
         <div className="col --invoice-rec">
             <div ref={ref} className="your-invoice">
@@ -55,8 +71,8 @@ const Invoice = ({ data, template, ref, setInvoiceId, iid = false, date = new Da
                                     <td>{i + 1}</td>
                                     <td>{e.name}</td>
                                     <td>{e.qty > 1 ? e.qty : "-"}</td>
-                                    <td>{e.qty > 1 ? <>${e.price}</> : "-"}</td>
-                                    <td>${e.price * e.qty}</td>
+                                    <td>{e.qty > 1 ? <>{currencyObject[invoiceCurrency]} {e.price}</> : "-"}</td>
+                                    <td>{currencyObject[invoiceCurrency]} {e.price * e.qty}</td>
                                 </tr>
                             ))
                         }
@@ -65,24 +81,26 @@ const Invoice = ({ data, template, ref, setInvoiceId, iid = false, date = new Da
                         <tr>
                             <td colSpan={3}></td>
                             <td>Subtotal</td>
-                            <td>${subtotal}</td>
+                            <td>{currencyObject[invoiceCurrency]} {subtotal}</td>
                         </tr>
                         <tr>
                             <td colSpan={3}></td>
                             <td>Total GST</td>
-                            <td>${gst.toFixed(2)}</td>
+                            <td>{currencyObject[invoiceCurrency]} {gst.toFixed(2)}</td>
                         </tr>
                         <tr>
                             <td colSpan={3}></td>
                             <td><b>Total</b></td>
-                            <td><b>${total}</b></td>
+                            <td><b>{total} {invoiceCurrency}</b></td>
                         </tr>
                     </tfoot>
                 </table>
                 <footer>
                     <div className="footer-col">
                         <h2>Thank you</h2>
-                        <p>Include GST at the standard 10% rate</p>
+                        {dynamicGST === "0.00" ? null : (
+                            <p>GST is included at {dynamicGST.split(".")[1].replace(/^0/, "")}% of the total value.</p>
+                        )}
                         {template.companyEmail.length ? <p>Email: {template.companyEmail}</p> : <></>}
                         {template.companyWebsite.length ? <p>Visit: {template.companyWebsite}</p> : <></>}
                     </div>

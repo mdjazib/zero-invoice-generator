@@ -17,6 +17,8 @@ const page = () => {
   const [oldInvoice, setOldInvoice] = useState(0);
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
+  const [gst, setGST] = useState("0.0");
+  const [currency, setCurrency] = useState("PKR");
   const [template, setTemplate] = useState({
     companyName: "",
     companyWebsite: "",
@@ -41,10 +43,12 @@ const page = () => {
   }
   useEffect(() => {
     setThemeSwitch(localStorage.getItem("zero-ig-theme") === "true");
+    const savedCurrency = localStorage.getItem("zero-invoice-currency");
     const savedCompany = localStorage.getItem("zero-ig-company");
-    if (savedCompany) {
-      setTemplate((prev) => ({ ...prev, ...JSON.parse(savedCompany) }));
-    }
+    const savedGST = localStorage.getItem("zero-invoice-gst");
+    if (savedCompany) setTemplate((prev) => ({ ...prev, ...JSON.parse(savedCompany) }));
+    if (savedCurrency) setCurrency(savedCurrency);
+    if (savedGST) setGST(savedGST);
   }, []);
   const themeSwitcher = (theme) => {
     localStorage.setItem("zero-ig-theme", theme);
@@ -104,6 +108,8 @@ const page = () => {
     formdata.append("clientAddress", template.clientAddress);
     formdata.append("clientContact", template.clientContact);
     formdata.append("clientEmail", template.clientEmail);
+    formdata.append("currency", currency);
+    formdata.append("gst", gst);
     formdata.append("invoice", JSON.stringify(invoice));
     const { data } = await axios.post(`/api/invoice/${route}`, formdata, {
       headers: {
@@ -161,7 +167,50 @@ const page = () => {
       <div className="col --generator">
         <div className="header">
           <h1>Zero Invoice</h1>
-          {themeSwitch ? <Sun onClick={() => { themeSwitcher(false) }} /> : <Moon onClick={() => { themeSwitcher(true) }} />}
+          <div className="sblock">
+            <div className="cblock">
+              <p>GST: </p>
+              <select value={gst} onChange={(e) => { setGST(e.target.value); localStorage.setItem("zero-invoice-gst", e.target.value) }}>
+                <option value="0.00">0%</option>
+                <option value="0.02">2%</option>
+                <option value="0.04">4%</option>
+                <option value="0.05">5%</option>
+                <option value="0.06">6%</option>
+                <option value="0.08">8%</option>
+                <option value="0.10">10%</option>
+                <option value="0.12">12%</option>
+                <option value="0.14">14%</option>
+                <option value="0.15">15%</option>
+                <option value="0.16">16%</option>
+                <option value="0.18">18%</option>
+                <option value="0.20">20%</option>
+                <option value="0.22">22%</option>
+                <option value="0.24">24%</option>
+                <option value="0.25">25%</option>
+                <option value="0.26">26%</option>
+                <option value="0.28">28%</option>
+                <option value="0.30">30%</option>
+                <option value="0.32">32%</option>
+              </select>
+            </div>
+            <div className="cblock">
+              <select value={currency} onChange={(e) => { setCurrency(e.target.value); localStorage.setItem("zero-invoice-currency", e.target.value) }}>
+                <option value="USD">USD</option>
+                <option value="CAD">CAD</option>
+                <option value="AUD">AUD</option>
+                <option value="NZD">NZD</option>
+                <option value="SGD">SGD</option>
+                <option value="PKR">PKR</option>
+                <option value="SAR">SAR</option>
+                <option value="AED">AED</option>
+                <option value="EUR">EUR</option>
+                <option value="GBP">GBP</option>
+              </select>
+            </div>
+            <div className="btn" onClick={() => { themeSwitcher(!themeSwitch) }}>
+              {themeSwitch ? <Sun /> : <Moon />}
+            </div>
+          </div>
         </div>
         <div className="data-group">
           <div className="header" onClick={() => { stepSwitcher(step === 1 ? 0 : 1) }}>
@@ -212,7 +261,7 @@ const page = () => {
           <div className="btn" onClick={handleInvoiceSend}>{sending ? <Loader /> : <Mail />}<span>Send Invoice</span></div>
         </div>
       </div>
-      <Invoice data={invoice} template={template} ref={ref} setInvoiceId={setInvoiceId} />
+      <Invoice data={invoice} template={template} ref={ref} setInvoiceId={setInvoiceId} gst={gst} currency={currency} />
     </div>
   )
 }

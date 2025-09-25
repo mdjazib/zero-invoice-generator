@@ -21,7 +21,7 @@ $quicksand: var(--font-quick-sand)
 .root
   height: 100svh
   width: 100vw
-  @include flex(flex-start,flex-start,row,0px)
+  @include flex(flex-start,flex-start,row,1px)
   background-color: lch(from $base calc(l - 6) c h)
   overflow-x: overlay
   scroll-snap-type: x mandatory
@@ -236,6 +236,10 @@ $quicksand: var(--font-quick-sand)
         height: 10px
     @media (max-width:1000px)
       gap: 10px
+    > .header
+      svg
+        width: 16px
+        height: 16px
     .header
       width: 100%
       @include flex(space-between,center,row,20px)
@@ -244,9 +248,34 @@ $quicksand: var(--font-quick-sand)
         font-family: $playfair
         font-size: clamp(20px,3vw,34px)
         color: $text
-      svg
+      .sblock
+        @include flex(center,center,row,1px)
+        background-color: lch(from $base calc( l - 6 ) c h)
+        border: 1px solid lch(from $base calc( l - 6 ) c h)
+        height: 36px
         color: $text
-        @media (max-width:600px)
+        @media (max-width:1000px)
+          height: 30px
+        > div,
+        > select
+          padding: 0px 10px
+          height: 100%
+          background-color: $base
+        select
+          outline: none
+          border: none
+          cursor: pointer
+          color: $text
+          background-color: $base
+          font-size: 12px
+        .cblock
+          @include flex(center,center,row,4px)
+          p
+            font-size: 12px
+        .btn
+          @include flex(center,center,row,0px)
+      svg
+        @media (max-width:1000px)
           width: 16px
           height: 16px
     .data-group
@@ -262,7 +291,7 @@ $quicksand: var(--font-quick-sand)
         top: 0px
         h2
           color: $text
-          font-weight: 600
+          font-weight: 500
           font-size: clamp(15px,3vw,20px)
         @media (max-width:1000px)
           padding: 14px
@@ -358,6 +387,10 @@ $quicksand: var(--font-quick-sand)
           background-color: lch(from $base calc(l - 4) c h)
 .--dark
   .--generator
+    .header
+      .sblock
+        border-color: lch(from $base calc(l + 10) c h)
+        background-color: lch(from $base calc(l + 10) c h)
     .cta-group
       border-color: lch(from $base calc(l + 10) c h)
       .btn

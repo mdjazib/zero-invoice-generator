@@ -4,34 +4,36 @@ import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
 export async function POST(req) {
-    await db();
-    const formdata = await req.formData();
-    const id = formdata.get("id");
-    const companyName = formdata.get("companyName");
-    const companyEmail = formdata.get("companyEmail");
-    const companyWebsite = formdata.get("companyWebsite");
-    const clientName = formdata.get("clientName");
-    const clientEmail = formdata.get("clientEmail");
-    const clientAddress = formdata.get("clientAddress");
-    const clientContact = formdata.get("clientContact");
-    const invoiceData = JSON.parse(formdata.get("invoice"));
-    const isExist = await invoice.countDocuments({ id });
-    if (!isExist) await invoice.create({ id, companyName, companyEmail, companyWebsite, clientName, clientEmail, clientAddress, clientContact, invoice: invoiceData });
-    const invoiceId = `${req.headers.get("origin")}/${id}`;
-    const transporter = nodemailer.createTransport({
-        host: "smtp.hostinger.com",
-        port: 465,
-        secure: true,
-        auth: {
-            user: process.env.MAIL_USER,
-            pass: process.env.MAIL_PASS,
-        },
-    });
-    await transporter.sendMail({
-        from: `"${companyName}" <zero-invoice@vebedge.com>`,
-        to: clientEmail,
-        subject: `Your Invoice ID ${id} • ${new Date().toLocaleDateString()}`,
-        html: `
+  await db();
+  const formdata = await req.formData();
+  const id = formdata.get("id");
+  const companyName = formdata.get("companyName");
+  const companyEmail = formdata.get("companyEmail");
+  const companyWebsite = formdata.get("companyWebsite");
+  const clientName = formdata.get("clientName");
+  const clientEmail = formdata.get("clientEmail");
+  const clientAddress = formdata.get("clientAddress");
+  const clientContact = formdata.get("clientContact");
+  const invoiceData = JSON.parse(formdata.get("invoice"));
+  const currency = formdata.get("currency");
+  const gst = formdata.get("gst");
+  const isExist = await invoice.countDocuments({ id });
+  if (!isExist) await invoice.create({ id, companyName, companyEmail, companyWebsite, clientName, clientEmail, clientAddress, clientContact, invoice: invoiceData, currency, gst });
+  const invoiceId = `${req.headers.get("origin")}/${id}`;
+  const transporter = nodemailer.createTransport({
+    host: "smtp.hostinger.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: process.env.MAIL_USER,
+      pass: process.env.MAIL_PASS,
+    },
+  });
+  await transporter.sendMail({
+    from: `"${companyName}" <zero-invoice@vebedge.com>`,
+    to: clientEmail,
+    subject: `Your Invoice ID ${id} • ${new Date().toLocaleDateString()}`,
+    html: `
 <div style="font-family: Arial, Helvetica, sans-serif; background-color: #ffffff; padding: 30px; color: #000;">
   <p style="margin-bottom: 30px;">
     <a href="${invoiceId}" style="display: inline-block; padding: 12px 44px; background: #000; color: #fff; text-decoration: none; font-size: 15px; font-weight: bold;">
@@ -47,6 +49,6 @@ export async function POST(req) {
   </p>
 </div>
         `
-    });
-    return NextResponse.json(200);
+  });
+  return NextResponse.json(200);
 }
