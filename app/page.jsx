@@ -160,7 +160,7 @@ const page = () => {
     <div style={themeSwitch ? theme.dark : theme.light} className={themeSwitch ? 'root --dark' : 'root'}>
       <div className="col --generator">
         <div className="header">
-          <h1>Zero Invoice Generator</h1>
+          <h1>Zero Invoice</h1>
           {themeSwitch ? <Sun onClick={() => { themeSwitcher(false) }} /> : <Moon onClick={() => { themeSwitcher(true) }} />}
         </div>
         <div className="data-group">
