@@ -11,7 +11,7 @@ const page = () => {
     const { id } = useParams();
     const [invoiceId, setInvoiceId] = useState("00000000000");
     const [date, setDate] = useState("");
-    const [gst, setGST] = useState("0.0");
+    const [gst, setGST] = useState("0.00");
     const [currency, setCurrency] = useState("PKR");
     const [invoice, setInvoice] = useState([]);
     const [loading, setLoading] = useState(true);

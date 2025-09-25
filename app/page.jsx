@@ -17,7 +17,7 @@ const page = () => {
   const [oldInvoice, setOldInvoice] = useState(0);
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
-  const [gst, setGST] = useState("0.0");
+  const [gst, setGST] = useState("0.00");
   const [currency, setCurrency] = useState("PKR");
   const [template, setTemplate] = useState({
     companyName: "",
