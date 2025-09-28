@@ -2,12 +2,16 @@
 import { Plus, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
-const Description = ({ setInvoice }) => {
+const Description = ({ setInvoice, refreshId }) => {
     const [items, setItems] = useState([{ name: "", qty: 1, price: 0 }]);
 
     useEffect(() => {
         setInvoice(items);
     }, [items, setInvoice]);
+
+    useEffect(() => {
+        setItems([{ name: "", qty: 1, price: 0 }]);
+    }, [refreshId]);
 
     const handleChange = (index, field, value) => {
         setItems((prev) =>

@@ -1,7 +1,7 @@
 "use client"
 import Description from '@/components/Description'
 import Invoice from '@/components/Invoice'
-import { Copy, ImageDown, Loader, Mail, Minus, Moon, Plus, Printer, Sun } from 'lucide-react'
+import { Copy, ImageDown, Loader, Mail, Minus, Moon, Plus, Printer, RefreshCcw, Sun } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
 import { useClipboard } from 'use-clipboard-copy'
 import domtoimage from "dom-to-image-more"
@@ -18,6 +18,7 @@ const page = () => {
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
   const [gst, setGST] = useState("0.00");
+  const [refreshId, setRefreshId] = useState(0);
   const [currency, setCurrency] = useState("PKR");
   const [template, setTemplate] = useState({
     companyName: "",
@@ -148,7 +149,7 @@ const page = () => {
           if (!sending) {
             setSending(true);
             const data = await invoiceFormData("mail");
-            data === 200 && toast.success("Invoice has been successfully sent to the client's email.");
+            data === 200 && toast.success("Invoice has been successfully sent. Delivery to the client’s email may take up to 5 minutes.");
             setSending(false);
           }
         } else {
@@ -162,53 +163,69 @@ const page = () => {
       setSending(false);
     }
   }
+  const refresh = () => {
+    stepSwitcher(3);
+    setRefreshId(Date.now());
+    setTemplate(prev => ({
+      ...prev,
+      clientName: "",
+      clientEmail: "",
+      clientContact: "",
+      clientAddress: ""
+    }));
+  }
   return (
     <div style={themeSwitch ? theme.dark : theme.light} className={themeSwitch ? 'root --dark' : 'root'}>
       <div className="col --generator">
         <div className="header">
           <h1>Zero Invoice</h1>
-          <div className="sblock">
-            <div className="cblock">
-              <p>GST: </p>
-              <select value={gst} onChange={(e) => { setGST(e.target.value); localStorage.setItem("zero-invoice-gst", e.target.value) }}>
-                <option value="0.00">0%</option>
-                <option value="0.02">2%</option>
-                <option value="0.04">4%</option>
-                <option value="0.05">5%</option>
-                <option value="0.06">6%</option>
-                <option value="0.08">8%</option>
-                <option value="0.10">10%</option>
-                <option value="0.12">12%</option>
-                <option value="0.14">14%</option>
-                <option value="0.15">15%</option>
-                <option value="0.16">16%</option>
-                <option value="0.18">18%</option>
-                <option value="0.20">20%</option>
-                <option value="0.22">22%</option>
-                <option value="0.24">24%</option>
-                <option value="0.25">25%</option>
-                <option value="0.26">26%</option>
-                <option value="0.28">28%</option>
-                <option value="0.30">30%</option>
-                <option value="0.32">32%</option>
-              </select>
+          <div className="bblock">
+            <div className="rtn" onClick={refresh}>
+              <RefreshCcw />
             </div>
-            <div className="cblock">
-              <select value={currency} onChange={(e) => { setCurrency(e.target.value); localStorage.setItem("zero-invoice-currency", e.target.value) }}>
-                <option value="USD">USD</option>
-                <option value="CAD">CAD</option>
-                <option value="AUD">AUD</option>
-                <option value="NZD">NZD</option>
-                <option value="SGD">SGD</option>
-                <option value="PKR">PKR</option>
-                <option value="SAR">SAR</option>
-                <option value="AED">AED</option>
-                <option value="EUR">EUR</option>
-                <option value="GBP">GBP</option>
-              </select>
-            </div>
-            <div className="btn" onClick={() => { themeSwitcher(!themeSwitch) }}>
-              {themeSwitch ? <Sun /> : <Moon />}
+            <div className="sblock">
+              <div className="cblock">
+                <p>GST: </p>
+                <select value={gst} onChange={(e) => { setGST(e.target.value); localStorage.setItem("zero-invoice-gst", e.target.value) }}>
+                  <option value="0.00">0%</option>
+                  <option value="0.02">2%</option>
+                  <option value="0.04">4%</option>
+                  <option value="0.05">5%</option>
+                  <option value="0.06">6%</option>
+                  <option value="0.08">8%</option>
+                  <option value="0.10">10%</option>
+                  <option value="0.12">12%</option>
+                  <option value="0.14">14%</option>
+                  <option value="0.15">15%</option>
+                  <option value="0.16">16%</option>
+                  <option value="0.18">18%</option>
+                  <option value="0.20">20%</option>
+                  <option value="0.22">22%</option>
+                  <option value="0.24">24%</option>
+                  <option value="0.25">25%</option>
+                  <option value="0.26">26%</option>
+                  <option value="0.28">28%</option>
+                  <option value="0.30">30%</option>
+                  <option value="0.32">32%</option>
+                </select>
+              </div>
+              <div className="cblock">
+                <select value={currency} onChange={(e) => { setCurrency(e.target.value); localStorage.setItem("zero-invoice-currency", e.target.value) }}>
+                  <option value="USD">USD</option>
+                  <option value="CAD">CAD</option>
+                  <option value="AUD">AUD</option>
+                  <option value="NZD">NZD</option>
+                  <option value="SGD">SGD</option>
+                  <option value="PKR">PKR</option>
+                  <option value="SAR">SAR</option>
+                  <option value="AED">AED</option>
+                  <option value="EUR">EUR</option>
+                  <option value="GBP">GBP</option>
+                </select>
+              </div>
+              <div className="btn" onClick={() => { themeSwitcher(!themeSwitch) }}>
+                {themeSwitch ? <Sun /> : <Moon />}
+              </div>
             </div>
           </div>
         </div>
@@ -247,7 +264,7 @@ const page = () => {
             {step === 3 ? <Minus /> : <Plus />}
           </div>
           <div className={step === 3 ? "data-collection --open" : "data-collection"}>
-            <Description setInvoice={setInvoice} />
+            <Description setInvoice={setInvoice} refreshId={refreshId} />
           </div>
         </div>
         <div className="cta-group">
